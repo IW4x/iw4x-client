@@ -1,6 +1,6 @@
 #pragma once
 
-#define PROTOCOL 0x95
+#define PROTOCOL 0x96
 #define NUM_CUSTOM_CLASSES 15
 #define SEMANTIC_WATER_MAP 11
 #define FX_ELEM_FIELD_COUNT 90
@@ -111,6 +111,39 @@ namespace Game
 		IMG_CATEGORY_TEMP = 0x7,
 	} ;
 
+	enum buttons_t
+	{
+		KB_LEFT = 0x0,
+		KB_RIGHT = 0x1,
+		KB_FORWARD = 0x2,
+		KB_BACK = 0x3,
+		KB_LOOKUP = 0x4,
+		KB_LOOKDOWN = 0x5,
+		KB_MOVELEFT = 0x6,
+		KB_MOVERIGHT = 0x7,
+		KB_STRAFE = 0x8,
+		KB_SPEED = 0x9,
+		KB_UP = 0xA,
+		KB_DOWN = 0xB,
+		KB_ANYUP = 0xC,
+		KB_MLOOK = 0xD,
+		KB_ATTACK = 0xE,
+		KB_BREATH = 0xF,
+		KB_FRAG = 0x10,
+		KB_OFFHANDSECONDARY = 0x11,
+		KB_MELEE = 0x12,
+		KB_ACTIVATE = 0x13,
+		KB_RELOAD = 0x14,
+		KB_USE_RELOAD = 0x15,
+		KB_PRONE = 0x16,
+		KB_CROUCH = 0x17,
+		KB_THROW = 0x18,
+		KB_SPRINT = 0x19,
+		KB_NIGHTVISION = 0x1A,
+		KB_TALK = 0x1B,
+		NUM_BUTTONS = 0x1C
+	};
+
 	enum DvarSetSource
 	{
 		DVAR_SOURCE_INTERNAL = 0x0,
@@ -172,6 +205,112 @@ namespace Game
 		bool wasPressed;
 	};
 #pragma pack(pop)
+
+	enum keyNum_t
+	{
+		K_NONE = 0x0,
+		K_TAB = 0x9,
+		K_ENTER = 0xD,
+		K_ESCAPE = 0x1B,
+		K_SPACE = 0x20,
+		K_BACKSPACE = 0x7F,
+		K_ASCII_FIRST = 0x80,
+		K_ASCII_181 = 0x80,
+		K_ASCII_191 = 0x81,
+		K_ASCII_223 = 0x82,
+		K_ASCII_224 = 0x83,
+		K_ASCII_225 = 0x84,
+		K_ASCII_228 = 0x85,
+		K_ASCII_229 = 0x86,
+		K_ASCII_230 = 0x87,
+		K_ASCII_231 = 0x88,
+		K_ASCII_232 = 0x89,
+		K_ASCII_233 = 0x8A,
+		K_ASCII_236 = 0x8B,
+		K_ASCII_241 = 0x8C,
+		K_ASCII_242 = 0x8D,
+		K_ASCII_243 = 0x8E,
+		K_ASCII_246 = 0x8F,
+		K_ASCII_248 = 0x90,
+		K_ASCII_249 = 0x91,
+		K_ASCII_250 = 0x92,
+		K_ASCII_252 = 0x93,
+		K_END_ASCII_CHARS = 0x94,
+		K_COMMAND = 0x96,
+		K_CAPSLOCK = 0x97,
+		K_POWER = 0x98,
+		K_PAUSE = 0x99,
+		K_UPARROW = 0x9A,
+		K_DOWNARROW = 0x9B,
+		K_LEFTARROW = 0x9C,
+		K_RIGHTARROW = 0x9D,
+		K_ALT = 0x9E,
+		K_CTRL = 0x9F,
+		K_SHIFT = 0xA0,
+		K_INS = 0xA1,
+		K_DEL = 0xA2,
+		K_PGDN = 0xA3,
+		K_PGUP = 0xA4,
+		K_HOME = 0xA5,
+		K_END = 0xA6,
+		K_F1 = 0xA7,
+		K_F2 = 0xA8,
+		K_F3 = 0xA9,
+		K_F4 = 0xAA,
+		K_F5 = 0xAB,
+		K_F6 = 0xAC,
+		K_F7 = 0xAD,
+		K_F8 = 0xAE,
+		K_F9 = 0xAF,
+		K_F10 = 0xB0,
+		K_F11 = 0xB1,
+		K_F12 = 0xB2,
+		K_F13 = 0xB3,
+		K_F14 = 0xB4,
+		K_F15 = 0xB5,
+		K_KP_HOME = 0xB6,
+		K_KP_UPARROW = 0xB7,
+		K_KP_PGUP = 0xB8,
+		K_KP_LEFTARROW = 0xB9,
+		K_KP_5 = 0xBA,
+		K_KP_RIGHTARROW = 0xBB,
+		K_KP_END = 0xBC,
+		K_KP_DOWNARROW = 0xBD,
+		K_KP_PGDN = 0xBE,
+		K_KP_ENTER = 0xBF,
+		K_KP_INS = 0xC0,
+		K_KP_DEL = 0xC1,
+		K_KP_SLASH = 0xC2,
+		K_KP_MINUS = 0xC3,
+		K_KP_PLUS = 0xC4,
+		K_KP_NUMLOCK = 0xC5,
+		K_KP_STAR = 0xC6,
+		K_KP_EQUALS = 0xC7,
+		K_MOUSE1 = 0xC8,
+		K_MOUSE2 = 0xC9,
+		K_MOUSE3 = 0xCA,
+		K_MOUSE4 = 0xCB,
+		K_MOUSE5 = 0xCC,
+		K_MWHEELDOWN = 0xCD,
+		K_MWHEELUP = 0xCE,
+		K_AUX1 = 0xCF,
+		K_AUX2 = 0xD0,
+		K_AUX3 = 0xD1,
+		K_AUX4 = 0xD2,
+		K_AUX5 = 0xD3,
+		K_AUX6 = 0xD4,
+		K_AUX7 = 0xD5,
+		K_AUX8 = 0xD6,
+		K_AUX9 = 0xD7,
+		K_AUX10 = 0xD8,
+		K_AUX11 = 0xD9,
+		K_AUX12 = 0xDA,
+		K_AUX13 = 0xDB,
+		K_AUX14 = 0xDC,
+		K_AUX15 = 0xDD,
+		K_AUX16 = 0xDE,
+		K_LAST_KEY = 0xDF,
+	};
 
 	struct __declspec(align(4)) PhysPreset
 	{
@@ -598,6 +737,569 @@ namespace Game
 		char stableArgCount;
 		char customSamplerFlags;
 		MaterialShaderArgument *args;
+	};
+
+	enum OffhandClass
+	{
+		OFFHAND_CLASS_NONE = 0x0,
+		OFFHAND_CLASS_FRAG_GRENADE = 0x1,
+		OFFHAND_CLASS_SMOKE_GRENADE = 0x2,
+		OFFHAND_CLASS_FLASH_GRENADE = 0x3,
+		OFFHAND_CLASS_THROWINGKNIFE = 0x4,
+		OFFHAND_CLASS_OTHER = 0x5,
+		OFFHAND_CLASS_COUNT = 0x6,
+	};
+
+	enum ViewLockTypes
+	{
+		PLAYERVIEWLOCK_NONE = 0x0,
+		PLAYERVIEWLOCK_FULL = 0x1,
+		PLAYERVIEWLOCK_WEAPONJITTER = 0x2,
+		PLAYERVIEWLOCKCOUNT = 0x3,
+	};
+
+	struct SprintState
+	{
+		int sprintButtonUpRequired;
+		int sprintDelay;
+		int lastSprintStart;
+		int lastSprintEnd;
+		int sprintStartMaxLength;
+	};
+
+
+	/* 1018 */
+	struct MantleState
+	{
+		float yaw;
+		int timer;
+		int transIndex;
+		int flags;
+	};
+
+	/* 1019 */
+	struct PlayerActiveWeaponState
+	{
+		int weapAnim;
+		int weaponTime;
+		int weaponDelay;
+		int weaponRestrictKickTime;
+		int weaponState;
+		int weapHandFlags;
+		unsigned int weaponShotCount;
+	};
+
+	/* 1020 */
+	struct PlayerEquippedWeaponState
+	{
+		bool usedBefore;
+		bool dualWielding;
+		char weaponModel;
+		bool needsRechamber[2];
+	};
+
+	/* 1021 */
+	struct GlobalAmmo
+	{
+		int ammoType;
+		int ammoCount;
+	};
+
+	/* 1022 */
+	struct ClipAmmo
+	{
+		int clipIndex;
+		int ammoCount[2];
+	};
+
+	enum PlayerHandIndex
+	{
+		WEAPON_HAND_RIGHT = 0x0,
+		WEAPON_HAND_LEFT = 0x1,
+		NUM_WEAPON_HANDS = 0x2,
+		WEAPON_HAND_DEFAULT = 0x0,
+	};
+
+	/* 1023 */
+	struct PlayerWeaponCommonState
+	{
+		int offHandIndex;
+		OffhandClass offhandPrimary;
+		OffhandClass offhandSecondary;
+		unsigned int weapon;
+		unsigned int primaryWeaponForAltMode;
+		int weapFlags;
+		float fWeaponPosFrac;
+		float aimSpreadScale;
+		int adsDelayTime;
+		int spreadOverride;
+		int spreadOverrideState;
+		PlayerHandIndex lastWeaponHand;
+		GlobalAmmo ammoNotInClip[15];
+		ClipAmmo ammoInClip[15];
+		int weapLockFlags;
+		int weapLockedEntnum;
+		float weapLockedPos[3];
+		int weaponIdleTime;
+	};
+
+	enum ActionSlotType
+	{
+		ACTIONSLOTTYPE_DONOTHING = 0x0,
+		ACTIONSLOTTYPE_SPECIFYWEAPON = 0x1,
+		ACTIONSLOTTYPE_ALTWEAPONTOGGLE = 0x2,
+		ACTIONSLOTTYPE_NIGHTVISION = 0x3,
+		ACTIONSLOTTYPECOUNT = 0x4,
+	};
+
+	/* 1024 */
+	struct ActionSlotParam_SpecifyWeapon
+	{
+		unsigned int index;
+	};
+
+	/* 1025 */
+	struct ActionSlotParam
+	{
+		ActionSlotParam_SpecifyWeapon specifyWeapon;
+	};
+
+	enum objectiveState_t
+	{
+		OBJST_EMPTY = 0x0,
+		OBJST_ACTIVE = 0x1,
+		OBJST_INVISIBLE = 0x2,
+		OBJST_DONE = 0x3,
+		OBJST_CURRENT = 0x4,
+		OBJST_FAILED = 0x5,
+		OBJST_NUMSTATES = 0x6,
+	};
+
+	/* 1026 */
+	struct objective_t
+	{
+		objectiveState_t state;
+		float origin[3];
+		int entNum;
+		int teamNum;
+		int icon;
+	};
+
+
+	/* 104 */
+	enum he_type_t
+	{
+		HE_TYPE_FREE = 0x0,
+		HE_TYPE_TEXT = 0x1,
+		HE_TYPE_VALUE = 0x2,
+		HE_TYPE_PLAYERNAME = 0x3,
+		HE_TYPE_MAPNAME = 0x4,
+		HE_TYPE_GAMETYPE = 0x5,
+		HE_TYPE_MATERIAL = 0x6,
+		HE_TYPE_TIMER_DOWN = 0x7,
+		HE_TYPE_TIMER_UP = 0x8,
+		HE_TYPE_TIMER_STATIC = 0x9,
+		HE_TYPE_TENTHS_TIMER_DOWN = 0xA,
+		HE_TYPE_TENTHS_TIMER_UP = 0xB,
+		HE_TYPE_TENTHS_TIMER_STATIC = 0xC,
+		HE_TYPE_CLOCK_DOWN = 0xD,
+		HE_TYPE_CLOCK_UP = 0xE,
+		HE_TYPE_WAYPOINT = 0xF,
+		HE_TYPE_COUNT = 0x10,
+	};
+
+	struct hud_color
+	{
+		char r;
+		char g;
+		char b;
+		char a;
+	};
+
+	/* 1028 */
+	union hudelem_color_t
+	{
+		hud_color __s0;
+		int rgba;
+	};
+
+	struct hudelem_s
+	{
+		he_type_t type;
+		float x;
+		float y;
+		float z;
+		int targetEntNum;
+		float fontScale;
+		float fromFontScale;
+		int fontScaleStartTime;
+		int fontScaleTime;
+		int font;
+		int alignOrg;
+		int alignScreen;
+		hudelem_color_t color;
+		hudelem_color_t fromColor;
+		int fadeStartTime;
+		int fadeTime;
+		int label;
+		int width;
+		int height;
+		int materialIndex;
+		int fromWidth;
+		int fromHeight;
+		int scaleStartTime;
+		int scaleTime;
+		float fromX;
+		float fromY;
+		int fromAlignOrg;
+		int fromAlignScreen;
+		int moveStartTime;
+		int moveTime;
+		int time;
+		int duration;
+		float value;
+		int text;
+		float sort;
+		hudelem_color_t glowColor;
+		int fxBirthTime;
+		int fxLetterTime;
+		int fxDecayStartTime;
+		int fxDecayDuration;
+		int soundID;
+		int flags;
+	};
+
+	struct $3EB5F037EADAEE8E2FA2A1F9FFF31312
+	{
+		hudelem_s current[31];
+		hudelem_s archival[31];
+	};
+
+	struct playerState_s
+	{
+		int commandTime;
+		int pm_type;
+		int pm_time;
+		int pm_flags;
+		int otherFlags;
+		int linkFlags;
+		int bobCycle;
+		float origin[3];
+		float velocity[3];
+		int grenadeTimeLeft;
+		int throwbackGrenadeOwner;
+		int throwbackGrenadeTimeLeft;
+		unsigned int throwbackWeaponIndex;
+		int remoteEyesEnt;
+		int remoteEyesTagname;
+		int remoteControlEnt;
+		int foliageSoundTime;
+		int gravity;
+		float leanf;
+		int speed;
+		float delta_angles[3];
+		int groundEntityNum;
+		float vLadderVec[3];
+		int jumpTime;
+		float jumpOriginZ;
+		int legsTimer;
+		int legsAnim;
+		int torsoTimer;
+		int torsoAnim;
+		int legsAnimDuration;
+		int torsoAnimDuration;
+		int damageTimer;
+		int damageDuration;
+		int flinchYawAnim;
+		int corpseIndex;
+		int movementDir;
+		int eFlags;
+		int eventSequence;
+		int events[4];
+		unsigned int eventParms[4];
+		int oldEventSequence;
+		int unpredictableEventSequence;
+		int unpredictableEventSequenceOld;
+		int unpredictableEvents[4];
+		unsigned int unpredictableEventParms[4];
+		int clientNum;
+		int viewmodelIndex;
+		float viewangles[3];
+		int viewHeightTarget;
+		float viewHeightCurrent;
+		int viewHeightLerpTime;
+		int viewHeightLerpTarget;
+		int viewHeightLerpDown;
+		float viewAngleClampBase[2];
+		float viewAngleClampRange[2];
+		int damageEvent;
+		int damageYaw;
+		int damagePitch;
+		int damageCount;
+		int damageFlags;
+		int stats[4];
+		float proneDirection;
+		float proneDirectionPitch;
+		float proneTorsoPitch;
+		ViewLockTypes viewlocked;
+		int viewlocked_entNum;
+		float linkAngles[3];
+		float linkWeaponAngles[3];
+		int linkWeaponEnt;
+		int loopSound;
+		int cursorHint;
+		int cursorHintString;
+		int cursorHintEntIndex;
+		int cursorHintDualWield;
+		int iCompassPlayerInfo;
+		int radarEnabled;
+		int radarBlocked;
+		int radarMode;
+		int locationSelectionInfo;
+		SprintState sprintState;
+		float holdBreathScale;
+		int holdBreathTimer;
+		float moveSpeedScaleMultiplier;
+		MantleState mantleState;
+		PlayerActiveWeaponState weapState[2];
+		unsigned int weaponsEquipped[15];
+		PlayerEquippedWeaponState weapEquippedData[15];
+		PlayerWeaponCommonState weapCommon;
+		float meleeChargeYaw;
+		int meleeChargeDist;
+		int meleeChargeTime;
+		unsigned int perks[2];
+		unsigned int perkSlots[8];
+		ActionSlotType actionSlotType[4];
+		ActionSlotParam actionSlotParam[4];
+		int weaponHudIconOverrides[6];
+		int animScriptedType;
+		int shellshockIndex;
+		int shellshockTime;
+		int shellshockDuration;
+		float dofNearStart;
+		float dofNearEnd;
+		float dofFarStart;
+		float dofFarEnd;
+		float dofNearBlur;
+		float dofFarBlur;
+		float dofViewmodelStart;
+		float dofViewmodelEnd;
+		objective_t objective[32];
+		int deltaTime;
+		int killCamEntity;
+		int killCamLookAtEntity;
+		int killCamClientNum;
+		$3EB5F037EADAEE8E2FA2A1F9FFF31312 hud;
+		unsigned int partBits[6];
+		int recoilScale;
+		int diveDirection;
+		int stunTime;
+	};
+
+	enum LocSelInputState
+	{
+		LOC_SEL_INPUT_NONE = 0x0,
+		LOC_SEL_INPUT_CONFIRM = 0x1,
+		LOC_SEL_INPUT_CANCEL = 0x2,
+	};
+
+	struct clSnapshot_t
+	{
+		playerState_s ps;
+		int valid;
+		int snapFlags;
+		int serverTime;
+		int messageNum;
+		int deltaNum;
+		int ping;
+		int cmdNum;
+		int numEntities;
+		int numClients;
+		int parseEntitiesIndex;
+		int parseClientsIndex;
+		int serverCommandNum;
+	};
+
+	enum StanceState
+	{
+		CL_STANCE_STAND = 0x0,
+		CL_STANCE_CROUCH = 0x1,
+		CL_STANCE_PRONE = 0x2,
+	};
+
+	struct ClientArchiveData
+	{
+		int serverTime;
+		float origin[3];
+		float velocity[3];
+		int bobCycle;
+		int movementDir;
+		float viewangles[3];
+		int locationSelectionInfo;
+		float selectedLocation[2];
+		float selectedLocationAngle;
+	};
+
+	struct outPacket_t
+	{
+		int p_cmdNumber;
+		int p_serverTime;
+		int p_realtime;
+	};
+
+	enum team_t
+	{
+		TEAM_FREE = 0x0,
+		TEAM_AXIS = 0x1,
+		TEAM_ALLIES = 0x2,
+		TEAM_SPECTATOR = 0x3,
+		TEAM_NUM_TEAMS = 0x4,
+	};
+
+	struct clientState_s
+	{
+		int clientIndex;
+		team_t team;
+		int modelindex;
+		int dualWielding;
+		int riotShieldNext;
+		int attachModelIndex[6];
+		int attachTagIndex[6];
+		char name[16];
+		float maxSprintTimeMultiplier;
+		int rank;
+		int prestige;
+		unsigned int perks[2];
+		int diveState;
+		int voiceConnectivityBits;
+		unsigned int playerCardIcon;
+		unsigned int playerCardTitle;
+		unsigned int playerCardNameplate;
+	};
+
+#pragma pack(push, 4)
+	struct usercmd_s
+	{
+		int serverTime;
+		int buttons;
+		int angles[3];
+		unsigned __int16 weapon;
+		unsigned __int16 primaryWeaponForAltMode;
+		unsigned __int16 offHandIndex;
+		char forwardmove;
+		char rightmove;
+		float meleeChargeYaw;
+		char meleeChargeDist;
+		char selectedLoc[2];
+		char selectedLocAngle;
+		char remoteControlAngles[2];
+	};
+#pragma pack(pop)
+
+	struct LerpEntityState
+	{
+		char pad[0x70];
+	};
+
+	struct clientLinkInfo_t
+	{
+		__int16 parentId;
+		char tagName;
+		char flags;
+	};
+
+	struct entityState_s
+	{
+		int number;
+		int eType;
+		LerpEntityState lerp;
+		int time2;
+		int otherEntityNum;
+		int attackerEntityNum;
+		int groundEntityNum;
+		int loopSound;
+		int surfType;
+
+		union
+		{
+			int brushModel;
+			int triggerModel;
+			int item;
+			int xmodel;
+			int primaryLight;
+		} index;
+
+		int clientNum;
+		int iHeadIcon;
+		int iHeadIconTeam;
+		int solid;
+		unsigned int eventParm;
+		int eventSequence;
+		int events[4];
+		unsigned int eventParms[4];
+		unsigned __int16 weapon;
+		int legsAnim;
+		int torsoAnim;
+		int un1;
+		int un2;
+		clientLinkInfo_t clientLinkInfo;
+		unsigned int partBits[6];
+		int clientMask[1];
+	};
+
+	struct clientActive_t
+	{
+		bool usingAds;
+		int timeoutcount;
+		clSnapshot_t snap;
+		bool alwaysFalse;
+		int serverTime;
+		int oldServerTime;
+		int oldFrameServerTime;
+		int serverTimeDelta;
+		int oldSnapServerTime;
+		int extrapolatedSnapshot;
+		int newSnapshots;
+		int serverId;
+		char mapname[64];
+		int parseEntitiesIndex;
+		int parseClientsIndex;
+		int mouseDx[2];
+		int mouseDy[2];
+		int mouseIndex;
+		bool stanceHeld;
+		StanceState stance;
+		StanceState stancePosition;
+		int stanceTime;
+		int cgameUserCmdWeapon;
+		int cgameUserCmdOffHandIndex;
+		float cgameFOVSensitivityScale;
+		float cgameMaxPitchSpeed;
+		float cgameMaxYawSpeed;
+		float cgameKickAngles[3];
+		float cgameOrigin[3];
+		float cgameVelocity[3];
+		float cgameViewangles[3];
+		int cgameBobCycle;
+		int cgameMovementDir;
+		int cgameExtraButtons;
+		int cgamePredictedDataServerTime;
+		float clViewangles[3];
+		usercmd_s cmds[128];
+		int cmdNumber;
+		ClientArchiveData clientArchive[256];
+		int clientArchiveIndex;
+		int packetBackupCount;
+		int packetBackupMask;
+		int parseEntitiesCount;
+		int parseClientsCount;
+		outPacket_t outPackets[32];
+		clSnapshot_t snapshots[32];
+		entityState_s parseEntities[19200];
+		clientState_s parseClients[576];
+		int corruptedTranslationFile;
+		char translationVersion[256];
 	};
 
 	struct MaterialTechnique
@@ -2716,18 +3418,6 @@ namespace Game
 		WEAPON_FIRETYPE_BURSTFIRE_FIRST = 0x2,
 		WEAPON_FIRETYPE_BURSTFIRE_LAST = 0x4,
 	};
-
-	enum OffhandClass
-	{
-		OFFHAND_CLASS_NONE = 0x0,
-		OFFHAND_CLASS_FRAG_GRENADE = 0x1,
-		OFFHAND_CLASS_SMOKE_GRENADE = 0x2,
-		OFFHAND_CLASS_FLASH_GRENADE = 0x3,
-		OFFHAND_CLASS_THROWINGKNIFE = 0x4,
-		OFFHAND_CLASS_OTHER = 0x5,
-		OFFHAND_CLASS_COUNT = 0x6,
-	};
-
 	enum weapStance_t
 	{
 		WEAPSTANCE_STAND = 0x0,
@@ -3976,25 +4666,6 @@ namespace Game
 	};
 #pragma pack(pop)
 
-#pragma pack(push, 4)
-	struct usercmd_s
-	{
-		int serverTime;
-		int buttons;
-		int angles[3];
-		unsigned __int16 weapon;
-		unsigned __int16 primaryWeaponForAltMode;
-		unsigned __int16 offHandIndex;
-		char forwardmove;
-		char rightmove;
-		float meleeChargeYaw;
-		char meleeChargeDist;
-		char selectedLoc[2];
-		char selectedLocAngle;
-		char remoteControlAngles[2];
-	};
-#pragma pack(pop)
-
 	typedef char mapname_t[40];
 
 	struct traceWork_t
@@ -4473,57 +5144,6 @@ namespace Game
 		int flags;
 		char pad3[724];
 	} gclient_t;
-
-	struct LerpEntityState
-	{
-		char pad[0x70];
-	};
-
-	struct clientLinkInfo_t
-	{
-		__int16 parentId;
-		char tagName;
-		char flags;
-	};
-
-	struct entityState_s
-	{
-		int number;
-		int eType;
-		LerpEntityState lerp;
-		int time2;
-		int otherEntityNum;
-		int attackerEntityNum;
-		int groundEntityNum;
-		int loopSound;
-		int surfType;
-
-		union
-		{
-			int brushModel;
-			int triggerModel;
-			int item;
-			int xmodel;
-			int primaryLight;
-		} index;
-
-		int clientNum;
-		int iHeadIcon;
-		int iHeadIconTeam;
-		int solid;
-		unsigned int eventParm;
-		int eventSequence;
-		int events[4];
-		unsigned int eventParms[4];
-		unsigned __int16 weapon;
-		int legsAnim;
-		int torsoAnim;
-		int un1;
-		int un2;
-		clientLinkInfo_t clientLinkInfo;
-		unsigned int partBits[6];
-		int clientMask[1];
-	};
 
 	struct EntHandle
 	{

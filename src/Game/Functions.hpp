@@ -49,6 +49,9 @@ namespace Game
 	typedef int(__cdecl * CG_GetClientNum_t)();
 	extern CG_GetClientNum_t CG_GetClientNum;
 
+	typedef void(__cdecl * CG_NextWeapon_f_t)();
+	extern CG_NextWeapon_f_t CG_NextWeapon_f;
+
 	typedef std::int32_t(__cdecl* CG_PlayBoltedEffect_t) (std::int32_t, FxEffectDef*, std::int32_t, std::uint32_t);
 	extern CG_PlayBoltedEffect_t CG_PlayBoltedEffect;
 
@@ -342,6 +345,9 @@ namespace Game
 	typedef void(__cdecl * Key_SetCatcher_t)(int localClientNum, int catcher);
 	extern Key_SetCatcher_t Key_SetCatcher;
 
+	typedef bool(__cdecl* Key_IsKeyCatcherActive_t)(int localClientNum, int catcher);
+	extern Key_IsKeyCatcherActive_t Key_IsKeyCatcherActive;
+
 	typedef void(__cdecl * LargeLocalInit_t)();
 	extern LargeLocalInit_t LargeLocalInit;
 
@@ -414,6 +420,15 @@ namespace Game
 	typedef bool(__cdecl * Menus_MenuIsInStack_t)(UiContext *dc, menuDef_t *menu);
 	extern Menus_MenuIsInStack_t Menus_MenuIsInStack;
 
+	typedef menuDef_t*(__cdecl* Menu_GetFocused_t)(UiContext* ctx);
+	extern Menu_GetFocused_t Menu_GetFocused;
+
+	typedef void(__cdecl* Menu_HandleKey_t)(UiContext* ctx, menuDef_t* menu, Game::keyNum_t key, int down);
+	extern Menu_HandleKey_t Menu_HandleKey;
+
+	typedef bool(__cdecl* UI_KeyEvent_t)(int clientNum, Game::keyNum_t key, int down);
+	extern UI_KeyEvent_t UI_KeyEvent;
+	
 	typedef void(__cdecl * MSG_Init_t)(msg_t *buf, char *data, int length);
 	extern MSG_Init_t MSG_Init;
 
@@ -422,6 +437,12 @@ namespace Game
 
 	typedef int(__cdecl * MSG_ReadLong_t)(msg_t* msg);
 	extern MSG_ReadLong_t MSG_ReadLong;
+
+	typedef int(__cdecl * MSG_ReadBit_t)(msg_t* msg);
+	extern MSG_ReadBit_t MSG_ReadBit;
+
+	typedef int(__cdecl * MSG_ReadBits_t)(msg_t* msg, int bits);
+	extern MSG_ReadBits_t MSG_ReadBits;
 
 	typedef short(__cdecl * MSG_ReadShort_t)(msg_t* msg);
 	extern MSG_ReadShort_t MSG_ReadShort;
@@ -787,6 +808,9 @@ namespace Game
 
 	extern cmd_function_t** cmd_functions;
 
+	extern float* cl_angles;
+	extern float* cgameFOVSensitivityScale;
+
 	extern int* svs_time;
 	extern int* svs_numclients;
 	extern client_t* svs_clients;
@@ -865,6 +889,8 @@ namespace Game
 
 	XAssetHeader ReallocateAssetPool(XAssetType type, unsigned int newSize);
 	void Menu_FreeItemMemory(Game::itemDef_s* item);
+	void Menu_SetNextCursorItem(Game::UiContext* ctx, Game::menuDef_t* currentMenu, int unk = 1);
+	void Menu_SetPrevCursorItem(Game::UiContext* ctx, Game::menuDef_t* currentMenu, int unk = 1);
 	const char* TableLookup(StringTable* stringtable, int row, int column);
 	const char* UI_LocalizeMapName(const char* mapName);
 	const char* UI_LocalizeGameType(const char* gameType);
@@ -879,6 +905,8 @@ namespace Game
 	XAssetEntry* DB_FindXAssetEntry(XAssetType type, const char* name);
 
 	void FS_AddLocalizedGameDirectory(const char *path, const char *dir);
+
+	bool PM_IsAdsAllowed(Game::playerState_s* playerState);
 
 	void ShowMessageBox(const std::string& message, const std::string& title);
 

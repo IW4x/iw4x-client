@@ -49,6 +49,9 @@
 #include <d3dx9tex.h>
 #pragma comment(lib, "D3dx9.lib")
 
+#include <Xinput.h>
+#pragma comment (lib, "xinput.lib")
+
 // Usefull for debugging
 template <size_t S> class Sizer { };
 #define BindNum(x, y) Sizer<x> y;

@@ -34,6 +34,7 @@ namespace Game
 	Cbuf_AddServerText_t Cbuf_AddServerText = Cbuf_AddServerText_t(0x4BB9B0);
 	Cbuf_AddText_t Cbuf_AddText = Cbuf_AddText_t(0x404B20);
 
+	CG_NextWeapon_f_t CG_NextWeapon_f = CG_NextWeapon_f_t(0x449DE0);
 	CG_GetClientNum_t CG_GetClientNum = CG_GetClientNum_t(0x433700);
 	CG_PlayBoltedEffect_t CG_PlayBoltedEffect = CG_PlayBoltedEffect_t(0x00430E10);
 	CG_GetBoneIndex_t CG_GetBoneIndex = CG_GetBoneIndex_t(0x00504F20);
@@ -148,6 +149,7 @@ namespace Game
 	Info_ValueForKey_t Info_ValueForKey = Info_ValueForKey_t(0x47C820);
 
 	Key_SetCatcher_t Key_SetCatcher = Key_SetCatcher_t(0x43BD00);
+	Key_IsKeyCatcherActive_t Key_IsKeyCatcherActive = Key_IsKeyCatcherActive_t(0x4DA010);
 
 	LargeLocalInit_t LargeLocalInit = LargeLocalInit_t(0x4A62A0);
 
@@ -175,8 +177,12 @@ namespace Game
 	Menus_FindByName_t Menus_FindByName = Menus_FindByName_t(0x487240);
 	Menu_IsVisible_t Menu_IsVisible = Menu_IsVisible_t(0x4D77D0);
 	Menus_MenuIsInStack_t Menus_MenuIsInStack = Menus_MenuIsInStack_t(0x47ACB0);
+	Menu_HandleKey_t Menu_HandleKey = Menu_HandleKey_t(0x4C4A00);
+	Menu_GetFocused_t Menu_GetFocused = Menu_GetFocused_t(0x4AFF10);
 
 	MSG_Init_t MSG_Init = MSG_Init_t(0x45FCA0);
+	MSG_ReadBit_t MSG_ReadBit = MSG_ReadBit_t(0x476D20);
+	MSG_ReadBits_t MSG_ReadBits = MSG_ReadBits_t(0x4C3900);
 	MSG_ReadData_t MSG_ReadData = MSG_ReadData_t(0x4527C0);
 	MSG_ReadLong_t MSG_ReadLong = MSG_ReadLong_t(0x4C9550);
 	MSG_ReadShort_t MSG_ReadShort = MSG_ReadShort_t(0x40BDD0);
@@ -325,6 +331,7 @@ namespace Game
 	UI_GetContext_t UI_GetContext = UI_GetContext_t(0x4F8940);
 	UI_TextWidth_t UI_TextWidth = UI_TextWidth_t(0x6315C0);
 	UI_DrawText_t UI_DrawText = UI_DrawText_t(0x49C0D0);
+	UI_KeyEvent_t UI_KeyEvent = UI_KeyEvent_t(0x4970F0);
 
 	Win_GetLanguage_t Win_GetLanguage = Win_GetLanguage_t(0x45CBA0);
 
@@ -347,6 +354,9 @@ namespace Game
 
 	source_t **sourceFiles = reinterpret_cast<source_t **>(0x7C4A98);
 	keywordHash_t **menuParseKeywordHash = reinterpret_cast<keywordHash_t **>(0x63AE928);
+
+	float* cl_angles = reinterpret_cast<float*>(0xB2F8D0);
+	float* cgameFOVSensitivityScale = reinterpret_cast<float*>(0xB2F884);
 
 	int* svs_time = reinterpret_cast<int*>(0x31D9384);
 	int* svs_numclients = reinterpret_cast<int*>(0x31D938C);
@@ -962,6 +972,21 @@ namespace Game
 		}
 	}
 
+	bool PM_IsAdsAllowed(Game::playerState_s* playerState)
+	{
+		bool result;
+
+		__asm
+		{
+			mov esi, playerState
+			mov ebx, 0x5755A0
+			call ebx
+			mov result, al // AL
+		}
+
+		return result;
+	}
+
 	__declspec(naked) void FS_AddLocalizedGameDirectory(const char* /*path*/, const char* /*dir*/)
 	{
 		__asm
@@ -1133,6 +1158,32 @@ namespace Game
 			call eax
 			popad
 			retn
+		}
+	}
+
+	void Menu_SetNextCursorItem(Game::UiContext* a1, Game::menuDef_t* a2, int unk)
+	{
+		__asm
+		{
+			push unk
+			push a2
+			mov eax, a1
+			mov ebx, 0x639FE0
+			call ebx
+			add esp, 0x8 // 2 args = 2x4
+		}
+	}
+
+	void Menu_SetPrevCursorItem(Game::UiContext* a1, Game::menuDef_t* a2, int unk)
+	{
+		__asm
+		{
+			push unk
+			push a2
+			mov eax, a1
+			mov ebx, 0x639F20
+			call ebx
+			add esp, 0x8 // 2 args = 2x4
 		}
 	}
 

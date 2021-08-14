@@ -352,11 +352,9 @@ namespace Components
 		{
 			// execute our hook
 			pushad
-			pusha
 
 			call Script::StoreScriptBaseProgramNum
 
-			popa
 			popad
 
 			// execute overwritten code caused by the jump hook
