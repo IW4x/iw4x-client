@@ -4,6 +4,251 @@
 
 namespace Assets
 {
+
+	void IXModel::dumpXSurfaceCollisionTree(Game::XSurfaceCollisionTree* entry, Utils::Stream* buffer)
+	{
+		buffer->saveObject(*entry);
+
+		if (entry->nodes)
+		{
+			buffer->saveArray(entry->nodes, entry->nodeCount);
+		}
+
+		if (entry->leafs)
+		{
+			buffer->saveArray(entry->leafs, entry->leafCount);
+		}
+	}
+
+	void IXModel::dumpXSurface(Game::XSurface* surf, Utils::Stream* buffer)
+	{
+		if (surf->vertInfo.vertsBlend)
+		{
+			buffer->saveArray(surf->vertInfo.vertsBlend, surf->vertInfo.vertCount[0] + (surf->vertInfo.vertCount[1] * 3) + (surf->vertInfo.vertCount[2] * 5) + (surf->vertInfo.vertCount[3] * 7));
+		}
+
+		// Access vertex block
+		if (surf->verts0)
+		{
+			buffer->saveArray(surf->verts0, surf->vertCount);
+		}
+
+		// Save_XRigidVertListArray
+		if (surf->vertList)
+		{
+			buffer->saveArray(surf->vertList, surf->vertListCount);
+
+			for (unsigned int i = 0; i < surf->vertListCount; ++i)
+			{
+				Game::XRigidVertList* rigidVertList = &surf->vertList[i];
+
+				if (rigidVertList->collisionTree)
+				{
+					IXModel::dumpXSurfaceCollisionTree(rigidVertList->collisionTree, buffer);
+				}
+			}
+		}
+
+		// Access index block
+		if (surf->triIndices)
+		{
+			buffer->saveArray(surf->triIndices, surf->triCount * 3);
+		}
+	}
+
+	void IXModel::dumpXModelSurfs(Game::XModelSurfs* asset, Utils::Stream* buffer)
+	{
+		buffer->saveObject(*asset);
+
+		if (asset->name)
+		{
+			buffer->saveString(asset->name);
+		}
+
+		if (asset->surfs)
+		{
+			buffer->saveArray(asset->surfs, asset->numsurfs);
+
+			for (int i = 0; i < asset->numsurfs; ++i)
+			{
+				IXModel::dumpXSurface(&asset->surfs[i], buffer);
+			}
+		}
+	}
+
+	void IXModel::dump(Game::XAssetHeader header)
+	{
+		auto asset = header.model;
+
+		if (!asset) return;
+
+		Utils::Stream buffer;
+		buffer.saveArray("IW4xModl", 8);
+		buffer.saveObject(IW4X_MODEL_VERSION);
+
+		buffer.saveObject(*asset);
+
+		if (asset->name)
+		{
+			buffer.saveString(asset->name);
+		}
+
+		if (asset->boneNames)
+		{
+			for (char i = 0; i < asset->numBones; ++i)
+			{
+				buffer.saveString(Game::SL_ConvertToString(asset->boneNames[i]));
+			}
+		}
+
+		if (asset->parentList)
+		{
+			buffer.saveArray(asset->parentList, asset->numBones - asset->numRootBones);
+		}
+
+		if (asset->quats)
+		{
+			buffer.saveArray(asset->quats, (asset->numBones - asset->numRootBones) * 4);
+		}
+
+		if (asset->trans)
+		{
+			buffer.saveArray(asset->trans, (asset->numBones - asset->numRootBones) * 3);
+		}
+
+		if (asset->partClassification)
+		{
+			buffer.saveArray(asset->partClassification, asset->numBones);
+		}
+
+		if (asset->baseMat)
+		{
+			buffer.saveArray(asset->baseMat, asset->numBones);
+		}
+
+		if (asset->materialHandles)
+		{
+			buffer.saveArray(asset->materialHandles, asset->numsurfs);
+
+			for (unsigned char i = 0; i < asset->numsurfs; ++i)
+			{
+				if (asset->materialHandles[i])
+				{
+					buffer.saveString(asset->materialHandles[i]->info.name);
+
+					auto assetHeader = Game::XAssetHeader{};
+					assetHeader.material = asset->materialHandles[i];
+					Components::AssetHandler::Dump({ Game::XAssetType::ASSET_TYPE_MATERIAL, assetHeader });
+				}
+			}
+		}
+
+		// Save_XModelLodInfoArray
+		{
+			for (int i = 0; i < 4; ++i)
+			{
+				if (asset->lodInfo[i].modelSurfs)
+				{
+					IXModel::dumpXModelSurfs(asset->lodInfo[i].modelSurfs, &buffer);
+				}
+			}
+		}
+
+		// Save_XModelCollSurfArray
+		if (asset->collSurfs)
+		{
+			buffer.saveArray(asset->collSurfs, asset->numCollSurfs);
+
+			for (int i = 0; i < asset->numCollSurfs; ++i)
+			{
+				Game::XModelCollSurf_s* collSurf = &asset->collSurfs[i];
+
+				if (collSurf->collTris)
+				{
+					buffer.saveArray(collSurf->collTris, collSurf->numCollTris);
+				}
+			}
+		}
+
+		if (asset->boneInfo)
+		{
+			buffer.saveArray(asset->boneInfo, asset->numBones);
+		}
+
+		if (asset->physPreset)
+		{
+			buffer.saveObject(*asset->physPreset);
+
+			if (asset->physPreset->name)
+			{
+				buffer.saveString(asset->physPreset->name);
+			}
+
+			if (asset->physPreset->sndAliasPrefix)
+			{
+				buffer.saveString(asset->physPreset->sndAliasPrefix);
+			}
+		}
+
+		if (asset->physCollmap)
+		{
+			Game::PhysCollmap* collmap = asset->physCollmap;
+			buffer.saveObject(*collmap);
+
+			if (collmap->name)
+			{
+				buffer.saveString(collmap->name);
+			}
+
+			if (collmap->geoms)
+			{
+				buffer.saveArray(collmap->geoms, collmap->count);
+
+				for (unsigned int i = 0; i < collmap->count; ++i)
+				{
+					Game::PhysGeomInfo* geom = &collmap->geoms[i];
+
+					if (geom->brushWrapper)
+					{
+						Game::BrushWrapper* brush = geom->brushWrapper;
+						buffer.saveObject(*brush);
+						{
+							if (brush->brush.sides)
+							{
+								buffer.saveArray(brush->brush.sides, brush->brush.numsides);
+
+								// Save_cbrushside_tArray
+								for (unsigned short j = 0; j < brush->brush.numsides; ++j)
+								{
+									Game::cbrushside_t* side = &brush->brush.sides[j];
+
+									if (side->plane)
+									{
+										buffer.saveObject(*side->plane);
+									}
+								}
+							}
+
+							if (brush->brush.baseAdjacentSide)
+							{
+								buffer.saveArray(brush->brush.baseAdjacentSide, brush->totalEdgeCount);
+							}
+						}
+
+						// TODO: Add pointer support
+						if (brush->planes)
+						{
+							buffer.saveArray(brush->planes, brush->brush.numsides);
+						}
+					}
+				}
+			}
+		}
+
+		Utils::IO::WriteFile(Utils::String::VA("%s/xmodel/%s.iw4xModel", "dump", asset->name), buffer.toBuffer());
+	}
+
+
 	void IXModel::loadXSurfaceCollisionTree(Game::XSurfaceCollisionTree* entry, Utils::Stream::Reader* reader)
 	{
 		if (entry->nodes)
@@ -504,5 +749,15 @@ namespace Assets
 		}
 
 		buffer->popBlock();
+	}
+
+	IXModel::IXModel() : Components::AssetHandler::IAsset()
+	{
+		Components::Command::Add("dumpXModel", [this](Components::Command::Params* params)
+		{
+			if (params->length() < 2) return;
+			auto mdlName = params->get(1);
+			IXModel::dump(Game::DB_FindXAssetHeader(Game::XAssetType::ASSET_TYPE_XMODEL, mdlName).model);
+		});
 	}
 }
