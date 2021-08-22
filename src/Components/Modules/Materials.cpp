@@ -8,6 +8,16 @@ namespace Components
 	std::vector<Game::GfxImage*> Materials::ImageTable;
 	std::vector<Game::Material*> Materials::MaterialTable;
 
+	std::map<std::string, std::string> Materials::TechsetSwaps
+	{
+		{ "mc_l_hsm_b0c0s0_em", "mc_l_hsm_b0c0s0_custom_growing_ice_cracks" }, // Car windows in mp_italy_sh
+		{ "mc_l_hsm_t0c0n0s0_fgcb", "mc_l_hsm_t0c0n0s0"},
+		{ "mc_l_hsm_r0c0n0s0_fgcb", "mc_l_hsm_r0c0n0s0"},
+		{ "mc_l_hsm_r0c0n0_fgcb", "mc_l_hsm_r0c0n0"},
+		{ "mc_l_hsm_t0c0_fgcb", "mc_l_hsm_t0c0"},
+		{ "mc_l_hsm_b0c0n0s0p0_fgcb", "mc_l_hsm_b0c0n0s0p0"}
+	};
+
 	Game::Material* Materials::Create(const std::string& name, Game::GfxImage* image)
 	{
 		Game::Material* material = Utils::Memory::GetAllocator()->allocate<Game::Material>();
@@ -284,6 +294,18 @@ namespace Components
 	}
 
 #endif
+	int Materials::FindTechniqueSet(const char* a1, int a2)
+	{
+		std::string techName = a1;
+		if (TechsetSwaps.find(techName) != TechsetSwaps.end())
+		{
+			a1 = TechsetSwaps[techName].data();
+			Components::Logger::Print("Swapped techset %s for %s at runtime\n", techName.data(), a1);
+		}
+
+		return Utils::Hook::Call<int(const char*, int)>(0x505C40)(a1, a2);
+	}
+
 
 	Materials::Materials()
 	{
@@ -304,8 +326,12 @@ namespace Components
 		// Resolve preview images to loadscreens
 		Utils::Hook(0x53AC19, Materials::FormatImagePath, HOOK_CALL).install()->quick();
 
+		// Intercept techset finding so we can swap them at runtime (although we should keep it to a minimum)
+		Utils::Hook(0x522CE0, Materials::FindTechniqueSet, HOOK_CALL).install()->quick();
+
 		// Debug material comparison
 		Utils::Hook::Set<void*>(0x523894, Materials::MaterialComparePrint);
+
 
 #ifdef DEBUG
 		if (Flags::HasFlag("dump"))
