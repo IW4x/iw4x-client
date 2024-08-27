@@ -215,7 +215,20 @@ namespace Components
 				}
 			}
 
-			if (!this->loadAssetByName(this->dataMap.getElementAt(i, 0), this->dataMap.getElementAt(i, 1), false))
+			auto type = this->dataMap.getElementAt(i, 0);
+			auto name = this->dataMap.getElementAt(i, 1);
+
+			if (type == "menu")
+			{
+				Logger::Warning(Game::CON_CHANNEL_FILES, "{} uses the wrong asset type {} (should be 'menufile'). Correcting automatically.\n", name, type);
+
+				// It's actually a menulist. Hopefully.
+				// There is no single-file asset representation for menus
+				type = "menufile";
+				name = std::format("ui_mp/{}.menu", name);
+			}
+
+			if (!this->loadAssetByName(type, name, false))
 			{
 				return false;
 			}

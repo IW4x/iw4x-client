@@ -37,6 +37,7 @@ namespace Assets
 		}
 		void save_ExpressionSupportingData(Game::ExpressionSupportingData* asset, Components::ZoneBuilder::Zone* builder);
 		void save_Statement_s(Game::Statement_s* asset, Components::ZoneBuilder::Zone* builder);
+		void save_StatementIfNeeded(Utils::Stream* buffer, Game::Statement_s* asset, Game::Statement_s** destination, Components::ZoneBuilder::Zone* builder);
 		void save_MenuEventHandlerSet(Game::MenuEventHandlerSet* asset, Components::ZoneBuilder::Zone* builder);
 		void save_ItemKeyHandler(Game::ItemKeyHandler* asset, Components::ZoneBuilder::Zone* builder);
 		void save_itemDefData_t(Game::itemDefData_t* asset, int type, Game::itemDef_s* dest, Components::ZoneBuilder::Zone* builder);

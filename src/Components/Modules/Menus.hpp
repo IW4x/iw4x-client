@@ -1,6 +1,6 @@
 #pragma once
 
-#undef LoadMenu
+#undef LoadOverrideForNativeMenu
 
 namespace Components
 {
@@ -9,15 +9,11 @@ namespace Components
 	public:
 		Menus();
 
-		void preDestroy() override;
-
-		static void FreeEverything();
-
 		static void Add(const std::string& menu);
 
-		static Game::MenuList* LoadCustomMenuList(const std::string& menu, Utils::Memory::Allocator* allocator);
-		static std::vector<std::pair<bool, Game::menuDef_t*>> LoadMenu(Game::menuDef_t* menudef);
-		static std::vector<std::pair<bool, Game::menuDef_t*>> LoadMenu(const std::string& menu);
+		static std::vector<std::pair<bool, Game::menuDef_t*>> LoadOverrideForNativeMenu(Game::menuDef_t* menudef);
+		static std::vector<std::pair<bool, Game::menuDef_t*>> LoadScriptMenuFromFile(const std::string& menu);
+		static Game::menuDef_t* GetMenu(const std::string& name);
 		
 	private:
 		static std::unordered_map<std::string, Game::menuDef_t*> MenuList;

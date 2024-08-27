@@ -6,15 +6,21 @@ namespace Assets
 
 	std::unordered_map<std::string, Game::menuDef_t*> ImenuDef_t::LoadedMenus;
 
-	void ImenuDef_t::load(Game::XAssetHeader* header, const std::string& name, Components::ZoneBuilder::Zone* /*builder*/)
+	void ImenuDef_t::load(Game::XAssetHeader* header, const std::string& name, Components::ZoneBuilder::Zone* /* builder */)
 	{
-		// load from disk
-		auto menus = Components::Menus::LoadMenu(std::format("ui_mp/{}.menu", name));
+		// Loading menus from disk is not supported!
+		// Use menu lists instead! (A scriptmenu might contain MORE THAN ONE MENU, which is tricky!)
+		header->menu = Components::AssetHandler::FindOriginalAsset(this->getType(), name.data()).menu;
 
-		if (menus.empty()) return;
-		if (menus.size() > 1) Components::Logger::Print("Menu '{}' on disk has more than one menudef in it. Only saving the first one\n", name);
+		if (header->menu == nullptr)
+		{
+			header->menu = Components::Menus::GetMenu(name);
+		}
 
-		header->menu = menus[0].second;
+		if (header->menu == nullptr)
+		{
+			printf("");
+		}
 	}
 
 
@@ -73,10 +79,7 @@ namespace Assets
 			{
 				if (asset->uifunctions.functions[i])
 				{
-					Utils::Stream::ClearPointer(&destStatement[i]);
-
-					buffer->align(Utils::Stream::ALIGN_4);
-					this->save_Statement_s(asset->uifunctions.functions[i], builder);
+					this->save_StatementIfNeeded(buffer, asset->uifunctions.functions[i], &destStatement[i], builder);
 				}
 			}
 
@@ -204,12 +207,35 @@ namespace Assets
 
 		if (asset->supportingData)
 		{
-			this->save_ExpressionSupportingData(asset->supportingData, builder);
-			Utils::Stream::ClearPointer(&dest->supportingData);
+			//if (builder->hasPointer(asset->supportingData))
+			//{
+			//	dest->supportingData = builder->getPointer(asset->supportingData);
+			//}
+			//else
+			{
+				this->save_ExpressionSupportingData(asset->supportingData, builder);
+				Utils::Stream::ClearPointer(&dest->supportingData);
+			}
 		}
 #ifdef WRITE_LOGS
 		buffer->leaveStruct();
 #endif
+	}
+
+	void ImenuDef_t::save_StatementIfNeeded(Utils::Stream* buffer, Game::Statement_s* asset, Game::Statement_s** destination, Components::ZoneBuilder::Zone* builder)
+	{
+		if (builder->hasPointer(asset))
+		{
+			*destination = builder->getPointer(asset);
+		}
+		else
+		{
+			buffer->align(Utils::Stream::ALIGN_4);
+			builder->storePointer(asset);
+
+			this->save_Statement_s(asset, builder);
+			Utils::Stream::ClearPointer(destination);
+		}
 	}
 
 	void ImenuDef_t::save_MenuEventHandlerSet(Game::MenuEventHandlerSet* asset, Components::ZoneBuilder::Zone* builder)
@@ -624,9 +650,15 @@ namespace Assets
 		// ExpressionSupportingData
 		if (asset->expressionData)
 		{
-			// dest->expressionData = nullptr;
-			this->save_ExpressionSupportingData(asset->expressionData, builder);
-			Utils::Stream::ClearPointer(&dest->expressionData);
+			//if (builder->hasPointer(asset->expressionData))
+			//{
+			//	dest->expressionData = builder->getPointer(asset->expressionData);
+			//}
+			//else
+			{
+				this->save_ExpressionSupportingData(asset->expressionData, builder);
+				Utils::Stream::ClearPointer(&dest->expressionData);
+			}
 		}
 
 		// Window data
