@@ -426,7 +426,7 @@ namespace Components
 		Utils::Hook::Set<std::uint8_t>(0x5AC854, 2);
 		Utils::Hook::Set<std::uint8_t>(0x5AC85A, 2);
 
-		// Force the hud to update the ammo (clip) counter when switching weapons during demo playback
+		// Force the hud to update the ammo (clip) counter when changing weapons during demo playback
 		Scheduler::Loop([]()
 		{
 			if (!Game::clientConnections->demoplaying)
