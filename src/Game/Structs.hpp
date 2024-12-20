@@ -15,6 +15,13 @@
 #ifndef IDA
 namespace Game
 {
+	constexpr std::size_t STATIC_MAX_LOCAL_CLIENTS = 1;
+	constexpr std::size_t MAX_LOCAL_CLIENTS = 1;
+	constexpr std::size_t MAX_CLIENTS = 18;
+
+	constexpr auto MAX_CMD_BUFFER = 0x10000;
+	constexpr auto MAX_CMD_LINE = 0x1000;
+	constexpr auto CMD_MAX_NESTING = 8;
 #endif
 
 	typedef float vec_t;
@@ -6181,7 +6188,7 @@ namespace Game
 		unsigned int hashSize;
 		fileInIwd_s** hashTable;
 		fileInIwd_s* buildBuffer;
-};
+	};
 
 #ifdef IDA
 	typedef void _iobuf;
@@ -7504,7 +7511,9 @@ namespace Game
 		int useCount;
 		gentity_s* nextFree;
 		int birthTime;
-		char pad[100];
+		char pad210[4];
+		gentity_s** linkedEntity; // used in G_RunMissile, name was guessed
+		char pad218[92];
 	};
 
 	static_assert(sizeof(gentity_s) == 0x274);
@@ -11772,6 +11781,57 @@ namespace Game
 		HHOOK__* lowLevelKeyboardHook;
 		unsigned int sysMsgTime;
 	};
+
+	struct AntilagClientStore
+	{
+		float realClientAngles[MAX_CLIENTS][3];
+		float realClientPositions[MAX_CLIENTS][3];
+		bool clientMoved[MAX_CLIENTS];
+
+		void Reset()
+		{
+			memset(this, 0, sizeof(AntilagClientStore));
+		}
+	};
+
+	struct BulletTraceResults
+	{
+		trace_t trace;
+		gentity_s* hitEnt;
+		float hitPos[3];
+		bool ignoreHitEnt;
+		int unk40 = 0;
+	};
+
+	static_assert(sizeof(BulletTraceResults) == 0x44);
+
+	struct BulletFireParams
+	{
+		int weaponEntIndex = 0;
+		int ignoreEntIndex = 0;
+		float damageMultiplier = 1;
+		int methodOfDeath = 0;
+		float start[3];
+		float origStart[3];
+		float end[3];
+		float dir[3];
+
+		// this function is inlined in game, game also calls Bullet_GetMethodOfDeath and fills methodOfDeath with its result - we can't due to include errors.
+		void Init(int weaponIndex, weaponParms* wpParms)
+		{
+			this->weaponEntIndex = weaponIndex;
+			this->ignoreEntIndex = weaponIndex;
+			this->damageMultiplier = 1.0f;
+			this->start[0] = wpParms->muzzleTrace[0];
+			this->start[1] = wpParms->muzzleTrace[1];
+			this->start[2] = wpParms->muzzleTrace[2];
+			this->origStart[0] = wpParms->muzzleTrace[0];
+			this->origStart[1] = wpParms->muzzleTrace[1];
+			this->origStart[2] = wpParms->muzzleTrace[2];
+		}
+	};
+
+	static_assert(sizeof(BulletFireParams) == 0x40);
 
 #pragma endregion
 

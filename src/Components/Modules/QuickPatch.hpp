@@ -19,10 +19,6 @@ namespace Components
 		static void SetAspectRatio_Stub();
 		static void SetAspectRatio();
 
-		static Game::dvar_t* g_antilag;
-		static void ClientEventsFireWeapon_Stub();
-		static void ClientEventsFireWeaponMelee_Stub();
-
 		static BOOL IsDynClassname_Stub(const char* classname);
 
 		static void CL_KeyEvent_OnEscape();

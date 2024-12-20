@@ -19,6 +19,7 @@ namespace Game
 	G_DebugLineWithDuration_t G_DebugLineWithDuration = G_DebugLineWithDuration_t(0x4C3280);
 
 	gentity_s* g_entities = reinterpret_cast<gentity_s*>(0x18835D8);
+	unsigned short* PartName_None = reinterpret_cast<unsigned short*>(0x1AA2E7A); // result of GScr_AllocString("none");
 	bool* g_quitRequested = reinterpret_cast<bool*>(0x649FB61);
 
 	NetField* clientStateFields = reinterpret_cast<Game::NetField*>(0x741E40);

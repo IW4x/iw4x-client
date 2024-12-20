@@ -54,62 +54,6 @@ namespace Components
 		}
 	}
 
-	Game::dvar_t* QuickPatch::g_antilag;
-	__declspec(naked) void QuickPatch::ClientEventsFireWeapon_Stub()
-	{
-		__asm
-		{
-			// check g_antilag dvar value
-			mov eax, g_antilag;
-			cmp byte ptr [eax + 16], 1;
-
-			// do antilag if 1
-			je fireWeapon
-
-			// do not do antilag if 0
-			mov eax, 0x1A83554 // level.time
-			mov ecx, [eax]
-
-		fireWeapon:
-			push edx
-			push ecx
-			push edi
-			mov eax, 0x4A4D50 // FireWeapon
-			call eax
-			add esp, 0Ch
-			pop edi
-			pop ecx
-			retn
-		}
-	}
-
-	__declspec(naked) void QuickPatch::ClientEventsFireWeaponMelee_Stub()
-	{
-		__asm
-		{
-			// check g_antilag dvar value
-			mov eax, g_antilag;
-			cmp byte ptr [eax + 16], 1;
-
-			// do antilag if 1
-			je fireWeaponMelee
-
-			// do not do antilag if 0
-			mov eax, 0x1A83554 // level.time
-			mov edx, [eax]
-
-		fireWeaponMelee:
-			push edx
-			push edi
-			mov eax, 0x4F2470 // FireWeaponMelee
-			call eax
-			add esp, 8
-			pop edi
-			pop ecx
-			retn
-		}
-	}
-
 	Game::dvar_t* QuickPatch::Dvar_RegisterAspectRatioDvar(const char* dvarName, const char** /*valueList*/, int defaultIndex, unsigned __int16 flags, const char* description)
 	{
 		static const char* r_aspectRatioEnum[] =
@@ -308,10 +252,6 @@ namespace Components
 
 		// Intermission time dvar
 		Game::Dvar_RegisterFloat("scr_intermissionTime", 10, 0, 120, Game::DVAR_NONE, "Time in seconds before match server loads the next map");
-
-		g_antilag = Game::Dvar_RegisterBool("g_antilag", true, Game::DVAR_CODINFO, "Perform antilag");
-		Utils::Hook(0x5D6D56, QuickPatch::ClientEventsFireWeapon_Stub, HOOK_JUMP).install()->quick();
-		Utils::Hook(0x5D6D6A, QuickPatch::ClientEventsFireWeaponMelee_Stub, HOOK_JUMP).install()->quick();
 
 		// Add ultrawide support
 		Utils::Hook(0x51B13B, QuickPatch::Dvar_RegisterAspectRatioDvar, HOOK_CALL).install()->quick();
