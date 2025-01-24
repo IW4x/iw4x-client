@@ -43,6 +43,8 @@ namespace Game
 	Scr_AddEntity_t Scr_AddEntity = Scr_AddEntity_t(0x4BFB40);
 	Scr_AddString_t Scr_AddString = Scr_AddString_t(0x412310);
 	Scr_AddConstString_t Scr_AddConstString = Scr_AddConstString_t(0x488860);
+	Scr_AddArray_t Scr_AddArray = Scr_AddArray_t(0x45CE80);
+	Scr_MakeArray_t Scr_MakeArray = Scr_MakeArray_t(0x437280);
 	Scr_AddIString_t Scr_AddIString = Scr_AddIString_t(0x455F20);
 	Scr_AddInt_t Scr_AddInt = Scr_AddInt_t(0x41D7D0);
 	Scr_AddFloat_t Scr_AddFloat = Scr_AddFloat_t(0x61E860);

@@ -1,4 +1,5 @@
 #include "ArenaLength.hpp"
+#include "GSC\Script.hpp"
 
 namespace Components
 {
@@ -350,6 +351,38 @@ namespace Components
 		return mapName;
 	}
 
+	void Localization::GSCr_LocalizeText()
+	{
+		if (Game::Scr_GetNumParam() != 1)
+		{
+			Game::Scr_Error("GSCr_LocalizeText: missing key!");
+			return;
+		}
+
+		const char* str = Game::Scr_GetString(0);
+
+		const auto result = Game::UI_SafeTranslateString(str);
+
+		Game::Scr_AddString(result);
+	}
+
+	void Localization::GSCr_LocalizeGametype()
+	{
+		if (Game::Scr_GetNumParam() != 1)
+		{
+			Game::Scr_Error("GSCr_LocalizeGametype: missing gametype!");
+			return;
+		}
+
+		const char* gametype = Game::Scr_GetString(0);
+
+		// UI_GetGameTypeDisplayName
+		const auto result = Utils::Hook::Call<const char* (const char*)>(0x4EB0B0)(gametype);
+
+		Game::Scr_AddString(result);
+	}
+
+
 	Localization::Localization()
 	{
 		SetCredits();
@@ -396,6 +429,12 @@ namespace Components
 				}
 			}
 		});
+
+		// gsc: LocalizeText(key)  (e.g. MP_MIDDLE_SQUAD)
+		Components::GSC::Script::AddFunction("LocalizeText", GSCr_LocalizeText);
+
+		// gsc: LocalizeGametype(gametype)  (e.g.: dm, war, koth)
+		Components::GSC::Script::AddFunction("LocalizeGametype", GSCr_LocalizeGametype);
 	}
 
 	Localization::~Localization()
