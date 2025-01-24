@@ -32,6 +32,7 @@ namespace Components
 	uint32_t RawMouse::MouseRawEvents = 0;
 
 	bool RawMouse::InRawInput = false;
+	bool RawMouse::InFocus = false;
 	bool RawMouse::FirstRawInputUpdate = true;
 
 	constexpr const int K_MWHEELUP = 205;
@@ -163,7 +164,7 @@ namespace Components
 		if (!GetRawInput(lParam, raw, dwSize))
 			return TRUE;
 
-		if (GetForegroundWindow() != Window::GetWindow())
+		if (!RawMouse::InFocus)
 			return TRUE;
 
 		// Is there's really absolute mouse on earth?
@@ -230,14 +231,13 @@ namespace Components
 
 		if (M_RawInput.get<bool>())
 		{
-			if (MouseEvents == 0)
-				return TRUE;
+			if (MouseEvents == 0 || !RawMouse::InFocus)
+				return FALSE;
 
 			if (M_RawInputVerbose.get<bool>())
 				Logger::Debug("Window Mouse Message: [{}, {}]", MouseEvents, MouseRawEvents);
 
 			MouseRawEvents = MouseEvents;
-			return TRUE;
 		}
 
 		Game::IN_MouseEvent(MouseEvents);
@@ -248,29 +248,31 @@ namespace Components
 
 	BOOL RawMouse::OnKillFocus([[maybe_unused]] LPARAM lParam, WPARAM)
 	{
+		RawMouse::InFocus = false;
+
 		ToggleRawInput(false);
-		if (R_AutoPriority.get<Game::dvar_t*>() && R_AutoPriority.get<bool>())
-			SetPriorityClass(GetCurrentProcess(), IDLE_PRIORITY_CLASS);
-		SetFocus(nullptr);
 		ResetMouseRawEvents();
+
+		if (!R_AutoPriority.get<Game::dvar_t*>() || !R_AutoPriority.get<bool>())
+			return DefWindowProc(Window::GetWindow(), WM_KILLFOCUS, 0, 0);
+
+		SetPriorityClass(GetCurrentProcess(), IDLE_PRIORITY_CLASS);
 		return FALSE;
 	}
 
 	BOOL RawMouse::OnSetFocus([[maybe_unused]] LPARAM lParam, WPARAM)
 	{
-		ToggleRawInput(IsMouseInClientBounds());
-		if (R_AutoPriority.get<Game::dvar_t*>() && R_AutoPriority.get<bool>())
-			SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+		RawMouse::InFocus = true;
 
-		SetFocus(Window::GetWindow());
+		if (!R_AutoPriority.get<Game::dvar_t*>() || !R_AutoPriority.get<bool>())
+			return DefWindowProc(Window::GetWindow(), WM_KILLFOCUS, 0, 0);
+
+		SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
 		return FALSE;
 	}
 
 	void RawMouse::IN_RawMouseMove()
 	{
-		if (GetForegroundWindow() != Window::GetWindow())
-			return;
-
 		auto dx = MouseRawX.GetDelta();
 		auto dy = MouseRawY.GetDelta();
 
@@ -286,11 +288,15 @@ namespace Components
 
 		Gamepad::OnMouseMove(curPos.x, curPos.y, dx, dy);
 
-		auto recenterMouse = Game::CL_MouseEvent(curPos.x, curPos.y, dx, dy);
+		// CL_MouseEvent returns true if we need to recenter mouse (the same case when we need clipping)
+		if (!Game::CL_MouseEvent(curPos.x, curPos.y, dx, dy))
+		{
+			ClipCursor(NULL);
+			return;
+		}
 
-		ClipCursor(NULL);
-
-		if (recenterMouse)
+		RECT Rect;
+		if (GetWindowRect(Window::GetWindow(), &Rect) == TRUE)
 		{
 			RawMouse::IN_RecenterMouse();
 		}
@@ -368,27 +374,39 @@ namespace Components
 
 	void RawMouse::IN_Frame()
 	{
-		bool focused = GetForegroundWindow() == Window::GetWindow();
-		if (focused)
-			focused = IsMouseInClientBounds();
-		ToggleRawInput(focused);
+		if (RawMouse::InFocus)
+			ToggleRawInput(IsMouseInClientBounds());
+
 		return Game::IN_Frame();
+	}
+
+	BOOL RawMouse::IN_ClipCursor()
+	{
+		RECT clientRect;
+		if (!GetClientRect(Window::GetWindow(), &clientRect))
+		{
+			return FALSE;
+		}
+
+		ClientToScreen(Window::GetWindow(), std::bit_cast<POINT*>(&clientRect.left));
+		ClientToScreen(Window::GetWindow(), std::bit_cast<POINT*>(&clientRect.right));
+		return ClipCursor(&clientRect);
 	}
 
 	BOOL RawMouse::IN_RecenterMouse()
 	{
-		RECT clientRect;
-
-		GetClientRect(Window::GetWindow(), &clientRect);
-
-		ClientToScreen(Window::GetWindow(), std::bit_cast<POINT*>(&clientRect.left));
-		ClientToScreen(Window::GetWindow(), std::bit_cast<POINT*>(&clientRect.right));
-
-		return ClipCursor(&clientRect);
+		IN_ClipCursor();
+		return Game::IN_RecenterMouse();
 	}
 
 	void RawMouse::IN_MouseMove()
 	{
+		if (!RawMouse::InFocus)
+		{
+			ClipCursor(NULL);
+			return;
+		}
+
 		if (InRawInput)
 		{
 			return IN_RawMouseMove();
@@ -417,6 +435,8 @@ namespace Components
 			RECT Rect;
 			if (GetWindowRect(Window::GetWindow(), &Rect) == TRUE)
 			{
+				RawMouse::IN_ClipCursor();
+
 				int WindowCenterX = (Rect.right + Rect.left) / 2;
 				int WindowCenterY = (Rect.top + Rect.bottom) / 2;
 				SetCursorPos(WindowCenterX, WindowCenterY);
@@ -425,11 +445,10 @@ namespace Components
 				prevCursorPos.y = WindowCenterY;
 			}
 		}
-	}
-
-	BOOL RawMouse::OnMouseFirst(LPARAM lParam, WPARAM wParam)
-	{
-		return OnLegacyMouseEvent(WM_MOUSEFIRST, lParam, wParam);
+		else if (!recenterMouse)
+		{
+			ClipCursor(NULL);
+		}
 	}
 
 	BOOL RawMouse::OnLBDown(LPARAM lParam, WPARAM wParam)
@@ -486,8 +505,6 @@ namespace Components
 		Utils::Hook(0x48A0E6, IN_Frame, HOOK_CALL).install()->quick();
 
 		Utils::Hook(0x473517, IN_RecenterMouse, HOOK_CALL).install()->quick();
-		Utils::Hook(0x64C520, IN_RecenterMouse, HOOK_CALL).install()->quick();
-
 		M_RawInput = Dvar::Register<bool>("m_rawinput", true, Game::DVAR_ARCHIVE, "Use raw mouse input, Improves accuracy & has better support for higher polling rates");
 		M_RawInputVerbose = Dvar::Register<bool>("m_rawinput_verbose", false, Game::DVAR_ARCHIVE | Game::DVAR_SAVED, "Raw mouse input debug log");
 
@@ -495,7 +512,6 @@ namespace Components
 		Window::OnWndMessage(WM_SETFOCUS, OnSetFocus);
 
 		// not the cleanest way but we got Msg in arguments now...
-		Window::OnWndMessage(WM_MOUSEFIRST, OnMouseFirst);
 		Window::OnWndMessage(WM_LBUTTONDOWN, OnLBDown);
 		Window::OnWndMessage(WM_LBUTTONUP, OnLBUp);
 		Window::OnWndMessage(WM_RBUTTONDOWN, OnRBDown);

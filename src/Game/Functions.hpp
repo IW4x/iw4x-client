@@ -527,7 +527,7 @@ namespace Game
 	typedef int(*Bullet_Fire_t)(gentity_s* attacker, float spread, weaponParms* wp, gentity_s* weaponEnt, PlayerHandIndex hand, int gameTime);
 	extern Bullet_Fire_t Bullet_Fire;
 
-	typedef void(*IN_RecenterMouse_t)();
+	typedef BOOL(*IN_RecenterMouse_t)();
 	extern IN_RecenterMouse_t IN_RecenterMouse;
 
 	typedef void(*IN_MouseMove_t)();

@@ -19,8 +19,6 @@ namespace Components
 
 		static void IN_MouseMove();
 
-		static BOOL OnMouseFirst(LPARAM lParam, WPARAM wParam);
-
 		static BOOL OnLBDown(LPARAM lParam, WPARAM wParam);
 		static BOOL OnLBUp(LPARAM lParam, WPARAM wParam);
 
@@ -37,7 +35,7 @@ namespace Components
 		static Dvar::Var M_RawInput, M_RawInputVerbose, R_FullScreen, R_AutoPriority;
 		static rawMouseValue_t MouseRawX, MouseRawY;
 		static uint32_t MouseRawEvents;
-		static bool InRawInput, FirstRawInputUpdate;
+		static bool InRawInput, FirstRawInputUpdate, InFocus;
 
 		static void IN_ClampMouseMove();
 		static void ResetMouseRawEvents();
@@ -53,6 +51,7 @@ namespace Components
 		static void IN_RawMouse_Init();
 		static void IN_Init();
 		static void IN_Frame();
+		static BOOL IN_ClipCursor();
 		static BOOL IN_RecenterMouse();
 	};
 }
