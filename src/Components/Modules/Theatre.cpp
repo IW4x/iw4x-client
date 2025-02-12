@@ -425,5 +425,23 @@ namespace Components
 		// Change font size
 		Utils::Hook::Set<std::uint8_t>(0x5AC854, 2);
 		Utils::Hook::Set<std::uint8_t>(0x5AC85A, 2);
+
+		// Force the hud to update the ammo (clip) counter when changing weapons during demo playback
+		Scheduler::Loop([]()
+		{
+			if (!Game::clientConnections->demoplaying)
+			{
+				return;
+			}
+
+			if (auto* cg = Game::cgArray; !std::cmp_equal(cg->weaponSelect, cg->predictedPlayerState.weapCommon.weapon))
+			{
+				// change ammo counter and ammo clip counter
+				cg->weaponSelect = cg->predictedPlayerState.weapCommon.weapon;
+
+				// show weapon name
+				cg->weaponSelectTime = cg->time;
+			}
+		}, Scheduler::Pipeline::MAIN);
 	}
 }

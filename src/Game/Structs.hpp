@@ -9502,15 +9502,18 @@ namespace Game
 		float swayOffset[3];
 		float recoilAngles[3];
 		float recoilSpeed[3];
-		char _pad2[22024];; // + 0x6A758
+		char _pad2[18600];
+		int weaponSelect;
+		int weaponSelectTime;
+		char _pad3[3416];
 		float compassMapWorldSize[2]; // + 0x73D64
-		char _pad3[0x74]; // + 0x73D6C
+		char _pad4[0x74]; // + 0x73D6C
 		float selectedLocation[2]; // + 0x73DE0
 		float selectedLocationAngle;
 		float selectedAngleLocation[2];
 		float selectedLocationPrev[2];
 		float selectedLocationAnglePrev;
-		char _pad4[0x89740];
+		char _pad5[0x89740];
 	};
 
 	static_assert(sizeof(cg_s) == 0xFD540);
